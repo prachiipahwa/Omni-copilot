@@ -83,11 +83,11 @@ export function Sidebar() {
           <div className="flex items-center gap-2.5 px-3 py-2 mt-1">
             <div className="w-6 h-6 rounded-full bg-indigo-600/30 border border-indigo-500/30 flex items-center justify-center flex-shrink-0">
               <span className="text-[10px] font-bold text-indigo-300 uppercase">
-                {(user.name || user.email)?.[0] ?? "U"}
+                {(user.full_name || user.email)?.[0] ?? "U"}
               </span>
             </div>
             <span className="text-xs text-slate-500 truncate flex-1">
-              {user.name || user.email}
+              {user.full_name || user.email}
             </span>
           </div>
         )}
