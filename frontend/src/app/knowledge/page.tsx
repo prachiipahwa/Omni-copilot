@@ -40,7 +40,7 @@ export default function KnowledgeBaseExplorer() {
     setIsSyncing(true);
     setSyncNotice(null);
     try {
-      const res = await ApiClient.post<any>('/indexing/sync/google', {});
+      const res = await ApiClient.post<any, any>('/indexing/sync/google', {});
       setSyncNotice({msg: "Map-Reduce embedding completed securely.", stats: res});
       if (activeTab === "index_status") fetchStatus();
     } catch (err) {
