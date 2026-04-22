@@ -1,32 +1,12 @@
-# Dependencies
-node_modules/
-venv/
-.venv/
-env/
+# Backend
+.env
 __pycache__/
 *.pyc
 
-# Local Databases/Data
-backend/vector_data/
-backend/chroma_data/
-*.db
-*.sqlite
-
-# Environment Files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Build/Dist
-.next/
-dist/
+# Frontend
+node_modules/
 build/
-out/
 
-# IDE/System
-.vscode/
-.idea/
+# Common
+*.log
 .DS_Store
-Thumbs.db
