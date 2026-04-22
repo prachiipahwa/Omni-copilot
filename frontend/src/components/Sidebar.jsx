@@ -1,5 +1,21 @@
 import { useState } from 'react'
 
+const THEME = {
+  bg:          '#0a0a0f',
+  surface:     '#13131a',
+  surfaceHigh: '#1c1c27',
+  border:      '#2a2a3d',
+  accent:      '#f43f7a',
+  accentSoft:  '#f43f7a18',
+  accentDim:   '#f43f7a60',
+  text:        '#f0eeff',
+  textMid:     '#a09ab8',
+  textDim:     '#4a4466',
+  green:       '#34d399',
+  greenBg:     '#0d2e22',
+  red:         '#f87171',
+}
+
 export default function Sidebar({ connected, onNav }) {
   const [active, setActive] = useState('Chat')
 
@@ -15,37 +31,42 @@ export default function Sidebar({ connected, onNav }) {
   return (
     <div style={{
       width: '210px',
-      background: '#0d1117',
+      background: THEME.bg,
       display: 'flex',
       flexDirection: 'column',
       flexShrink: 0,
       padding: '20px 14px',
       gap: '2px',
-      borderRight: '1px solid #21262d'
+      borderRight: `1px solid ${THEME.border}`
     }}>
 
       {/* Logo */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: '10px',
         padding: '4px 8px 18px',
-        borderBottom: '1px solid #21262d',
+        borderBottom: `1px solid ${THEME.border}`,
         marginBottom: '14px'
       }}>
+        {/* Sparkle icon */}
         <div style={{
-          width: '30px', height: '30px', flexShrink: 0,
-          background: 'linear-gradient(135deg, #e6a817, #f5c842)',
-          borderRadius: '8px', display: 'flex', alignItems: 'center',
-          justifyContent: 'center', fontSize: '14px',
-          color: '#0d1117', fontWeight: '900'
-        }}>O</div>
-        <span style={{ color: '#e6edf3', fontSize: '14px', fontWeight: '700', letterSpacing: '-0.2px' }}>
+          width: '32px', height: '32px', flexShrink: 0,
+          background: `linear-gradient(135deg, #f43f7a, #ff6b9d)`,
+          borderRadius: '9px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 2px 12px #f43f7a40'
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2 L13.5 9 L20 12 L13.5 15 L12 22 L10.5 15 L4 12 L10.5 9 Z"/>
+          </svg>
+        </div>
+        <span style={{ color: THEME.text, fontSize: '14px', fontWeight: '700', letterSpacing: '-0.2px' }}>
           Omni Copilot
         </span>
       </div>
 
       {/* Section label */}
       <div style={{
-        fontSize: '10px', color: '#484f58', fontWeight: '600',
+        fontSize: '10px', color: THEME.textDim, fontWeight: '600',
         letterSpacing: '0.8px', textTransform: 'uppercase',
         padding: '0 8px', marginBottom: '6px'
       }}>
@@ -65,23 +86,23 @@ export default function Sidebar({ connected, onNav }) {
               display: 'flex', alignItems: 'center', gap: '10px',
               padding: '8px 10px', borderRadius: '8px',
               cursor: 'pointer',
-              background: isActive ? '#e6a81718' : 'transparent',
-              color: isActive ? '#e6a817' : '#8b949e',
+              background: isActive ? THEME.accentSoft : 'transparent',
+              color: isActive ? THEME.accent : THEME.textMid,
               fontSize: '13px', fontWeight: isActive ? '600' : '400',
               transition: 'all 0.15s',
               userSelect: 'none',
-              borderLeft: isActive ? '2px solid #e6a817' : '2px solid transparent'
+              borderLeft: isActive ? `2px solid ${THEME.accent}` : '2px solid transparent'
             }}
             onMouseEnter={e => {
               if (!isActive) {
-                e.currentTarget.style.background = '#161b22'
-                e.currentTarget.style.color = '#c9d1d9'
+                e.currentTarget.style.background = THEME.surface
+                e.currentTarget.style.color = THEME.text
               }
             }}
             onMouseLeave={e => {
               if (!isActive) {
                 e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.color = '#8b949e'
+                e.currentTarget.style.color = THEME.textMid
               }
             }}
           >
@@ -92,38 +113,38 @@ export default function Sidebar({ connected, onNav }) {
       })}
 
       {/* Divider */}
-      <div style={{ borderTop: '1px solid #21262d', margin: '12px 0' }} />
+      <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '12px 0' }} />
 
       {/* Google connect */}
       {connected ? (
         <div style={{
           display: 'flex', alignItems: 'center', gap: '10px',
           padding: '8px 10px', borderRadius: '8px',
-          background: '#1a2e1a', color: '#3fb950', fontSize: '12px'
+          background: THEME.greenBg, color: THEME.green, fontSize: '12px'
         }}>
           <div style={{ width: '7px', height: '7px', borderRadius: '50%',
-            background: '#3fb950', flexShrink: 0 }}/>
+            background: THEME.green, flexShrink: 0 }}/>
           Google connected
         </div>
       ) : (
         <a href="http://localhost:3001/auth/google" style={{
           display: 'flex', alignItems: 'center', gap: '10px',
           padding: '8px 10px', borderRadius: '8px',
-          background: '#161b22', color: '#8b949e',
+          background: THEME.surface, color: THEME.textMid,
           fontSize: '12px', textDecoration: 'none',
-          transition: 'all 0.15s', border: '1px solid #21262d'
+          transition: 'all 0.15s', border: `1px solid ${THEME.border}`
         }}
           onMouseEnter={e => {
-            e.currentTarget.style.borderColor = '#e6a817'
-            e.currentTarget.style.color = '#e6a817'
+            e.currentTarget.style.borderColor = THEME.accent
+            e.currentTarget.style.color = THEME.accent
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.borderColor = '#21262d'
-            e.currentTarget.style.color = '#8b949e'
+            e.currentTarget.style.borderColor = THEME.border
+            e.currentTarget.style.color = THEME.textMid
           }}
         >
           <div style={{ width: '7px', height: '7px', borderRadius: '50%',
-            background: '#f85149', flexShrink: 0 }}/>
+            background: THEME.red, flexShrink: 0 }}/>
           Connect Google
         </a>
       )}
@@ -131,19 +152,19 @@ export default function Sidebar({ connected, onNav }) {
       {/* User badge */}
       <div style={{
         marginTop: 'auto', padding: '10px',
-        borderRadius: '8px', background: '#161b22',
-        border: '1px solid #21262d',
+        borderRadius: '8px', background: THEME.surface,
+        border: `1px solid ${THEME.border}`,
         display: 'flex', alignItems: 'center', gap: '10px'
       }}>
         <div style={{
           width: '28px', height: '28px', borderRadius: '50%',
-          background: 'linear-gradient(135deg, #e6a817, #f5c842)',
+          background: `linear-gradient(135deg, #f43f7a, #ff6b9d)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '12px', color: '#0d1117', fontWeight: '800', flexShrink: 0
+          fontSize: '12px', color: '#fff', fontWeight: '800', flexShrink: 0
         }}>G</div>
         <div>
-          <div style={{ fontSize: '12px', color: '#e6edf3', fontWeight: '500' }}>You</div>
-          <div style={{ fontSize: '10px', color: '#484f58' }}>Active now</div>
+          <div style={{ fontSize: '12px', color: THEME.text, fontWeight: '500' }}>You</div>
+          <div style={{ fontSize: '10px', color: THEME.textDim }}>Active now</div>
         </div>
       </div>
     </div>

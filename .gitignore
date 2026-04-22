@@ -1,5 +1,6 @@
 # Backend
 .env
+backend/tokens.json
 __pycache__/
 *.pyc
 

@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { chatHandler } from './routes/chat.js'
-import { googleAuthStart, googleAuthCallback } from './routes/auth.js'
+import { googleAuthStart, googleAuthCallback, isGoogleConnected } from './routes/auth.js'
 dotenv.config()
 
 const app = express()
@@ -11,6 +11,10 @@ app.use(express.json({ limit: '20mb' }))
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Omni Copilot backend is alive!' })
+})
+
+app.get('/api/auth/status', (req, res) => {
+  res.json({ connected: isGoogleConnected() })
 })
 
 app.post('/api/chat', chatHandler)
