@@ -6,7 +6,24 @@ import { googleAuthStart, googleAuthCallback, isGoogleConnected } from './routes
 dotenv.config()
 
 const app = express()
-app.use(cors())
+
+// CORS — allow only the known frontend origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://omni-copilot-aic9.vercel.app',
+  process.env.FRONTEND_URL,
+].filter(Boolean)
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) return callback(null, true)
+    callback(new Error(`CORS: origin ${origin} not allowed`))
+  },
+  credentials: true
+}))
+
 app.use(express.json({ limit: '20mb' }))
 
 app.get('/api/health', (req, res) => {
@@ -23,6 +40,7 @@ app.post('/api/chat', chatHandler)
 app.get('/auth/google', googleAuthStart)
 app.get('/auth/google/callback', googleAuthCallback)
 
-app.listen(3001, () => {
-  console.log('Backend running on http://localhost:3001')
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`)
 })

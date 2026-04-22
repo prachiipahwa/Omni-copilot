@@ -7,19 +7,38 @@ dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TOKEN_PATH = path.join(__dirname, '..', 'tokens.json')
+const IS_PROD = process.env.NODE_ENV === 'production'
 
-// Load tokens from disk on startup
+// Load tokens from disk on startup (local only — production uses env var)
 let storedTokens = null
-try {
-  if (fs.existsSync(TOKEN_PATH)) {
-    storedTokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf-8'))
-    console.log('Google tokens loaded from disk ✓')
+
+if (IS_PROD && process.env.GOOGLE_TOKENS) {
+  // In production, tokens can be seeded via env var (base64-encoded JSON)
+  try {
+    storedTokens = JSON.parse(Buffer.from(process.env.GOOGLE_TOKENS, 'base64').toString('utf-8'))
+    console.log('Google tokens loaded from GOOGLE_TOKENS env var ✓')
+  } catch (err) {
+    console.warn('Could not parse GOOGLE_TOKENS env var:', err.message)
   }
-} catch (err) {
-  console.warn('Could not load saved tokens:', err.message)
+} else {
+  try {
+    if (fs.existsSync(TOKEN_PATH)) {
+      storedTokens = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf-8'))
+      console.log('Google tokens loaded from disk ✓')
+    }
+  } catch (err) {
+    console.warn('Could not load saved tokens:', err.message)
+  }
 }
 
 function saveTokens(tokens) {
+  if (IS_PROD) {
+    // Can't persist to disk in production — tokens live in memory until restart
+    // To persist: copy the base64 value logged below into GOOGLE_TOKENS env var
+    const b64 = Buffer.from(JSON.stringify(tokens)).toString('base64')
+    console.log('PRODUCTION: Update GOOGLE_TOKENS env var with:', b64)
+    return
+  }
   try {
     fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2))
     console.log('Google tokens saved to disk ✓')
@@ -40,7 +59,7 @@ export function googleAuthStart(req, res) {
 
   const url = oauth2Client.generateAuthUrl({
     access_type: 'offline',
-    prompt: 'consent',   // force refresh_token to be returned every time
+    prompt: 'consent',
     scope: [
       'https://www.googleapis.com/auth/drive.readonly',
       'https://www.googleapis.com/auth/gmail.readonly',
@@ -57,11 +76,14 @@ export async function googleAuthCallback(req, res) {
   const { code } = req.query
   const oauth2Client = getOAuthClient()
 
+  // Use FRONTEND_URL env var — works for both local and production
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+
   try {
     const { tokens } = await oauth2Client.getToken(code)
     storedTokens = tokens
     saveTokens(tokens)
-    res.redirect('http://localhost:5173?connected=true')
+    res.redirect(`${frontendUrl}?connected=true`)
   } catch (err) {
     console.error('Auth error:', err.message)
     res.status(500).send('Authentication failed: ' + err.message)
@@ -73,7 +95,6 @@ export function getAuthenticatedClient() {
   const oauth2Client = getOAuthClient()
   oauth2Client.setCredentials(storedTokens)
 
-  // Auto-refresh: if access token is expired, googleapis will use refresh_token automatically
   oauth2Client.on('tokens', (newTokens) => {
     if (newTokens.refresh_token) {
       storedTokens = { ...storedTokens, ...newTokens }
@@ -86,7 +107,6 @@ export function getAuthenticatedClient() {
   return oauth2Client
 }
 
-// Expose whether tokens are loaded (for health/status checks)
 export function isGoogleConnected() {
   return storedTokens !== null
 }

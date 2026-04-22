@@ -22,6 +22,8 @@ const THEME = {
   red:         '#f87171',
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
+
 const ChatWindow = forwardRef(function ChatWindow(_, ref) {
   const [messages, setMessages]           = useState([])
   const [input, setInput]                 = useState('')
@@ -88,7 +90,7 @@ const ChatWindow = forwardRef(function ChatWindow(_, ref) {
     }])
 
     try {
-      const res  = await fetch('http://localhost:3001/api/chat', {
+      const res  = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -16,6 +16,8 @@ const THEME = {
   red:         '#f87171',
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
+
 export default function Sidebar({ connected, onNav }) {
   const [active, setActive] = useState('Chat')
 
@@ -127,7 +129,7 @@ export default function Sidebar({ connected, onNav }) {
           Google connected
         </div>
       ) : (
-        <a href="http://localhost:3001/auth/google" style={{
+        <a href={`${API_BASE}/auth/google`} style={{
           display: 'flex', alignItems: 'center', gap: '10px',
           padding: '8px 10px', borderRadius: '8px',
           background: THEME.surface, color: THEME.textMid,

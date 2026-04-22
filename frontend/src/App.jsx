@@ -2,20 +2,20 @@ import { useEffect, useRef, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import ChatWindow from './components/ChatWindow'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
+
 export default function App() {
   const [connected, setConnected] = useState(false)
   const chatRef = useRef(null)
 
   useEffect(() => {
-    // Check if just returned from OAuth
     if (window.location.search.includes('connected=true')) {
       setConnected(true)
       window.history.replaceState({}, '', '/')
       return
     }
 
-    // Check persisted token status from backend on every load
-    fetch('http://localhost:3001/api/auth/status')
+    fetch(`${API_BASE}/api/auth/status`)
       .then(r => r.json())
       .then(data => { if (data.connected) setConnected(true) })
       .catch(() => {})
