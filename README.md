@@ -2,8 +2,6 @@
 
 An AI-powered workspace assistant that connects your Google Workspace (Drive, Gmail, Calendar, Forms) and Notion into a single chat interface. Ask questions in plain English and get live answers pulled from your actual data.
 
-![Dark theme chat UI with sidebar navigation]
-
 ---
 
 ## What it does
